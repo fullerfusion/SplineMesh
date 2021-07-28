@@ -49,11 +49,16 @@ namespace SplineMesh {
             t.Apply();
             upButtonStyle = new GUIStyle();
             upButtonStyle.normal.background = t;
-            selection = null;
+            selection = getSelectedNode();
 			
             Undo.undoRedoPerformed -= spline.RefreshCurves;
             Undo.undoRedoPerformed += spline.RefreshCurves;
+            SceneView.onSceneGUIDelegate += this.OnSceneGUIDel;
         }
+        private void OnDisable()
+		{
+			SceneView.onSceneGUIDelegate -= this.OnSceneGUIDel;
+		}
 
         SplineNode AddClonedNode(SplineNode node) {
             int index = spline.nodes.IndexOf(node);
@@ -65,6 +70,24 @@ namespace SplineMesh {
             }
             return res;
         }
+
+        protected SplineNode getSelectedNode()
+        {
+            if (spline != null && selection == null && Selection.activeGameObject == spline.gameObject)
+            {
+                if (selection == null && spline.nodes.Count > 0)
+                {
+                    return spline.nodes[0];
+                }
+            }
+
+            return null;
+        }
+
+		void OnSceneGUIDel(SceneView sceneView)
+		{
+			OnSceneGUI();
+		}
 
         void OnSceneGUI() {
             // disable game object transform gyzmo
@@ -198,7 +221,7 @@ namespace SplineMesh {
             serializedObject.Update();
 
             if(spline.nodes.IndexOf(selection) < 0) {
-                selection = null;
+                selection = getSelectedNode();
             }
 
             // add button
