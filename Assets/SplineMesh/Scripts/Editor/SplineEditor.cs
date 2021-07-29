@@ -53,11 +53,11 @@ namespace SplineMesh {
 			
             Undo.undoRedoPerformed -= spline.RefreshCurves;
             Undo.undoRedoPerformed += spline.RefreshCurves;
-            SceneView.onSceneGUIDelegate += this.OnSceneGUIDel;
+            SceneView.duringSceneGui += this.OnSceneGUIDel;
         }
         private void OnDisable()
 		{
-			SceneView.onSceneGUIDelegate -= this.OnSceneGUIDel;
+			SceneView.duringSceneGui -= this.OnSceneGUIDel;
 		}
 
         SplineNode AddClonedNode(SplineNode node) {
